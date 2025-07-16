@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
+import { TherapistsModule } from './therapists/therapists.module';
 import serverConfig from './config/server';
 
 @Module({
@@ -10,6 +11,7 @@ import serverConfig from './config/server';
       isGlobal: true,
       load: [serverConfig],
     }),
+    TherapistsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
