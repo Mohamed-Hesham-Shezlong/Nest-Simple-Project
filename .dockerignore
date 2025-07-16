@@ -6,3 +6,5 @@ dist
 README.md
 .vscode
 coverage 
+Dockerfile.prod
+Dockerfile.dev

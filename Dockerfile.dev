@@ -1,14 +1,16 @@
 # Dockerfile.dev
 FROM node:20-alpine
 
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
+COPY package.json pnpm-lock.yaml ./
+
+RUN pnpm install
 
 COPY . .
 
-RUN npm install -g @nestjs/cli
-
-
-CMD ["npm", "run", "start:dev"]
+# Default command
+CMD ["pnpm", "start:dev"]
