@@ -8,14 +8,29 @@
 
 A practice project implementing core NestJS concepts.
 
-## NestJS Concepts
+## NestJS Concepts I'm learning & Applying
 
-- **Modules** - Feature organization and encapsulation
-- **Controllers** - HTTP request handling and routing
-- **Services** - Business logic and data management
-- **DTOs** - Data validation and type safety
-- **Interfaces** - TypeScript type definitions
-- **Dependency Injection** - Service management and injection
+- **Interceptors**
+
+  Used for
+
+  1- made a logging intercepter to log Request Details
+  - example
+
+```
+[Nest] 199568  - 07/16/2025, 3:46:12 PM     LOG [LoggingInterceptor] POST /api/v1/therapists [TherapistsController.create] - 14ms
+```
+
+2- Transfor Interceptor for standarizing the response returned
+
+```json
+{
+    "status": "success",
+    "data": {
+        ...
+    }
+}
+```
 
 ## Project Setup
 
@@ -35,7 +50,8 @@ $ pnpm run start:prod
 There is a "api/v1" global prefix for evey endpoint
 
 - `POST /therapists` - Create a new therapist
-  sample request
+
+- sample request
 
 ```json
 {
