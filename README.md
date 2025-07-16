@@ -31,3 +31,26 @@ $ pnpm run start:prod
 ```
 
 ## API Endpoints
+
+There is a "api/v1" global prefix for evey endpoint
+
+- `POST /therapists` - Create a new therapist
+  sample request
+
+```json
+{
+  "name": "Dr. Mohamed",
+  "email": "mohamed@gmail.com",
+  "specialization": "CBT",
+  "yearsOfExperience": 1,
+  "education": "Ph.D. in Clinical Psychology from Cairo University",
+  "bio": "therapy services...",
+  "hourlyRate": 20,
+  "languages": ["English", "Arabic"]
+}
+```
+
+- `GET /therapists` - Get all therapists
+- `GET /therapists/:id` - Get a specific therapist
+- `PUT /therapists/:id` - Update a therapist
+- `DELETE /therapists/:id` - Delete a therapist
