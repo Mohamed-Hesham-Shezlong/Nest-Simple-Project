@@ -32,6 +32,10 @@ A practice project implementing core NestJS concepts.
 }
 ```
 
+- **Validation and pipes**
+
+used class validator and class transformer for validating DTOs
+
 ## Project Setup
 
 ```bash
