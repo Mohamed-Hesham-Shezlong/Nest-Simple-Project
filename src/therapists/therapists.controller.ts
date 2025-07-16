@@ -18,18 +18,20 @@ export class TherapistsController {
   constructor(private readonly therapistsService: TherapistsService) {}
 
   @Post()
-  create(@Body() createTherapistDto: CreateTherapistDto): Therapist {
-    return this.therapistsService.create(createTherapistDto);
+  async create(
+    @Body() createTherapistDto: CreateTherapistDto,
+  ): Promise<Therapist> {
+    return await this.therapistsService.create(createTherapistDto);
   }
 
   @Get()
-  findAll(): Therapist[] {
-    return this.therapistsService.findAll();
+  async findAll(): Promise<Therapist[]> {
+    return await this.therapistsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Therapist {
-    const therapist = this.therapistsService.findOne(Number(id));
+  async findOne(@Param('id') id: string): Promise<Therapist> {
+    const therapist = await this.therapistsService.findOne(Number(id));
     if (!therapist) {
       throw new HttpException('Therapist not found', HttpStatus.NOT_FOUND);
     }
@@ -37,11 +39,14 @@ export class TherapistsController {
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateData: Partial<CreateTherapistDto>,
-  ): Therapist {
-    const therapist = this.therapistsService.update(Number(id), updateData);
+  ): Promise<Therapist> {
+    const therapist = await this.therapistsService.update(
+      Number(id),
+      updateData,
+    );
     if (!therapist) {
       throw new HttpException('Therapist not found', HttpStatus.NOT_FOUND);
     }
@@ -49,8 +54,8 @@ export class TherapistsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): void {
-    const isDeleted = this.therapistsService.remove(Number(id));
+  async remove(@Param('id') id: string): Promise<void> {
+    const isDeleted = await this.therapistsService.remove(Number(id));
     if (!isDeleted) {
       throw new HttpException('Therapist not found', HttpStatus.NOT_FOUND);
     }

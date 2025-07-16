@@ -1,49 +1,75 @@
-import { Injectable } from '@nestjs/common';
-import { Therapist } from './interfaces/therapist.interface';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DeleteResult, Repository } from 'typeorm';
+import { Therapist } from './entities/therapist.entity';
 import { CreateTherapistDto } from './dto/create-therapist.dto';
 
 @Injectable()
 export class TherapistsService {
-  private readonly therapists: Therapist[] = [];
+  constructor(
+    @InjectRepository(Therapist)
+    private therapistsRepository: Repository<Therapist>,
+  ) {}
 
-  create(createTherapistDto: CreateTherapistDto): Therapist {
-    const therapist: Therapist = {
-      id: this.therapists.length + 1,
+  async create(createTherapistDto: CreateTherapistDto): Promise<Therapist> {
+    const existingTherapist = await this.therapistsRepository.findOne({
+      where: { email: createTherapistDto.email },
+    });
+    if (existingTherapist) {
+      throw new BadRequestException('Therapist with this email already exists');
+    }
+
+    const therapist = this.therapistsRepository.create({
       ...createTherapistDto,
       isAvailable: true,
-      rating: 0,
-    };
-    this.therapists.push(therapist);
+    });
+    return this.therapistsRepository.save(therapist);
+  }
+
+  async findAll(): Promise<Therapist[]> {
+    return this.therapistsRepository.find();
+  }
+
+  async findOne(id: number): Promise<Therapist> {
+    const therapist = await this.therapistsRepository.findOne({
+      where: { id },
+    });
+    if (!therapist) {
+      throw new NotFoundException(`Therapist with ID ${id} not found`);
+    }
     return therapist;
   }
 
-  findAll(): Therapist[] {
-    return this.therapists;
-  }
-
-  findOne(id: number): Therapist | null {
-    return this.therapists.find((therapist) => therapist.id === id) ?? null;
-  }
-
-  update(
+  async update(
     id: number,
     updateData: Partial<CreateTherapistDto>,
-  ): Therapist | null {
-    const therapist = this.findOne(id);
-    if (!therapist) {
-      return null;
+  ): Promise<Therapist> {
+    const therapist = await this.findOne(id);
+    Object.assign(therapist, updateData);
+
+    if (updateData.email) {
+      const existingTherapist = await this.therapistsRepository.findOne({
+        where: { email: updateData.email },
+      });
+      if (existingTherapist) {
+        throw new BadRequestException(
+          'Therapist with this email already exists',
+        );
+      }
     }
 
-    Object.assign(therapist, updateData);
-    return therapist;
+    return this.therapistsRepository.save(therapist);
   }
 
-  remove(id: number): boolean {
-    const index = this.therapists.findIndex((therapist) => therapist.id === id);
-    if (index === -1) {
-      return false;
+  async remove(id: number): Promise<DeleteResult> {
+    const result = await this.therapistsRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Therapist with ID ${id} not found`);
     }
-    this.therapists.splice(index, 1);
-    return true;
+    return result;
   }
 }
