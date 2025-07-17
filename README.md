@@ -36,6 +36,12 @@ A practice project implementing core NestJS concepts.
 
 used class validator and class transformer for validating DTOs
 
+- **Exception Filters**
+
+- made global exception filter to standarize errors responses
+
+- made validation exception filter to standarize validation errors (bad requests)
+
 - **GUARDS**
 
 ## Project Setup
