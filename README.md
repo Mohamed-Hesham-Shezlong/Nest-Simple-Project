@@ -73,6 +73,17 @@ docker compose up -d
 - API: `http://localhost:{PORT_IN_ENV || 3000 by default}`
 - Database: `localhost:3306`
 
+## Authentication
+
+The application uses JWT (JSON Web Token) based authentication. Users can register, login, and access protected endpoints using JWT tokens.
+
+### User Roles
+
+There are two types of users:
+
+- `USER`: Regular user with limited access
+- `ADMIN`: Administrator with full access to therapist management
+
 ## API Endpoints
 
 There is a "api/v1" global prefix for evey endpoint
