@@ -5,6 +5,7 @@ import {
   Delete,
   Body,
   Param,
+  UseGuards,
   HttpException,
   HttpStatus,
   Patch,
@@ -12,8 +13,10 @@ import {
 import { TherapistsService } from './therapists.service';
 import { CreateTherapistDto } from './dto/create-therapist.dto';
 import { Therapist } from './interfaces/therapist.interface';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('therapists')
+@UseGuards(JwtAuthGuard)
 export class TherapistsController {
   constructor(private readonly therapistsService: TherapistsService) {}
 
