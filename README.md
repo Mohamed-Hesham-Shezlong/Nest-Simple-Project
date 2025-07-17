@@ -36,18 +36,42 @@ A practice project implementing core NestJS concepts.
 
 used class validator and class transformer for validating DTOs
 
+- **GUARDS**
+
 ## Project Setup
 
+I switched to docker to add the mariaDB database
+The project consists of two main containers:
+
+- **NestJS Application**
+- **MariaDB Database**
+
+### Getting Started
+
+1. Clone the repository:
+
 ```bash
-# Install dependencies
-$ pnpm install
-
-# Run in development mode
-$ pnpm run start:dev
-
-# Run in production mode
-$ pnpm run start:prod
+git clone <repository-url>
+cd Nest-Simple-Project
 ```
+
+2. Create a `.env` file in the root directory (use `.env.example` as a template):
+
+```bash
+cp .env.example .env
+```
+
+3. Start the containers:
+
+```bash
+## run the containers
+docker compose up -d
+```
+
+4. The application will be available at:
+
+- API: `http://localhost:{PORT_IN_ENV || 3000 by default}`
+- Database: `localhost:3306`
 
 ## API Endpoints
 
