@@ -7,7 +7,7 @@ services:
     ports:
       - '${PORT}:${PORT}'
     volumes:
-      - ./src:/app/src
+      - .:/app
       - /app/node_modules
       - pnpm_store:/root/.pnpm-store
     environment:
