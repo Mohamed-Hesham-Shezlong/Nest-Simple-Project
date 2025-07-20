@@ -96,4 +96,69 @@ describe('AuthService', () => {
       where: { email: registerDto.email },
     });
   });
+
+  it('should login user', async () => {
+    const mockUser = {
+      id: 1,
+      email: 'mohamed@gmail.com',
+      password: 'hashedPassword',
+      validatePassword: jest.fn().mockResolvedValue(true),
+    };
+
+    (userRepository.findOne as jest.Mock).mockResolvedValueOnce(mockUser);
+
+    const loginDto: LoginDto = {
+      email: 'mohamed@gmail.com',
+      password: 'normalPassword',
+    };
+
+    const result = await authService.login(loginDto);
+
+    expect(result).toHaveProperty('token', 'mock-jwt-token');
+    expect(result).toHaveProperty('user', mockUser);
+    expect(userRepository.findOne).toHaveBeenCalledWith({
+      where: { email: loginDto.email },
+    });
+    expect(mockUser.validatePassword).toHaveBeenCalledWith('normalPassword');
+  });
+
+  it('should throw UnauthorizedException when user not found', async () => {
+    (userRepository.findOne as jest.Mock).mockResolvedValueOnce(null);
+
+    const loginDto: LoginDto = {
+      email: 'nonexistent@gmail.com',
+      password: 'password123',
+    };
+
+    await expect(authService.login(loginDto)).rejects.toThrow(
+      UnauthorizedException,
+    );
+    expect(userRepository.findOne).toHaveBeenCalledWith({
+      where: { email: loginDto.email },
+    });
+  });
+
+  it('should throw UnauthorizedException when password is invalid', async () => {
+    const mockUser = {
+      id: 1,
+      email: 'mohamed@gmail.com',
+      password: 'hashedPassword',
+      validatePassword: jest.fn().mockResolvedValue(false),
+    };
+
+    (userRepository.findOne as jest.Mock).mockResolvedValueOnce(mockUser);
+
+    const loginDto: LoginDto = {
+      email: 'mohamed@gmail.com',
+      password: 'wrongPassword',
+    };
+
+    await expect(authService.login(loginDto)).rejects.toThrow(
+      UnauthorizedException,
+    );
+    expect(userRepository.findOne).toHaveBeenCalledWith({
+      where: { email: loginDto.email },
+    });
+    expect(mockUser.validatePassword).toHaveBeenCalledWith('wrongPassword');
+  });
 });
