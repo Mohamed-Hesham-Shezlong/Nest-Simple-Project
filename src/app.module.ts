@@ -11,12 +11,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import databaseConfig from './config/database';
 import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 import serverConfig from './config/server';
+import jwtConfig from './config/jwt';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [serverConfig, databaseConfig],
+      load: [serverConfig, databaseConfig, jwtConfig],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
