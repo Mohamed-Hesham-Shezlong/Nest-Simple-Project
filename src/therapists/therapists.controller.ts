@@ -10,6 +10,9 @@ import {
   HttpException,
   HttpStatus,
   Patch,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import { TherapistsService } from './therapists.service';
 import { CreateTherapistDto } from './dto/create-therapist.dto';
@@ -19,11 +22,17 @@ import { User } from '../auth/entities/user.entity';
 import { Therapist } from './entities/therapist.entity';
 import { UserRole } from 'src/auth/interfaces/user.role';
 import { IsAdminGuard } from 'src/auth/guards/admin-auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { csvUploadConfig } from 'src/config/csv-upload';
+import { CsvService } from 'src/csv/csv.service';
 
 @Controller('therapists')
 @UseGuards(JwtAuthGuard)
 export class TherapistsController {
-  constructor(private readonly therapistsService: TherapistsService) {}
+  constructor(
+    private readonly therapistsService: TherapistsService,
+    private readonly csvService: CsvService,
+  ) {}
 
   @Post()
   @UseGuards(IsAdminGuard)
@@ -62,5 +71,18 @@ export class TherapistsController {
   @UseGuards(IsAdminGuard)
   async remove(@Param('id') id: string, @CurrentUser() user: User) {
     return await this.therapistsService.remove(+id);
+  }
+
+  @Post('upload-csv')
+  @UseInterceptors(FileInterceptor('file', csvUploadConfig))
+  async uploadCSVFile(
+    @UploadedFile() file: Express.Multer.File,
+    @CurrentUser() user: User,
+  ) {
+    if (!file) {
+      return new BadRequestException('File not provided');
+    }
+    console.log('File uploaded:', file);
+    return await this.csvService.parseCsv(file.path);
   }
 }
