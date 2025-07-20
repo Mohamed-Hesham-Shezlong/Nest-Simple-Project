@@ -18,6 +18,7 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../auth/entities/user.entity';
 import { Therapist } from './entities/therapist.entity';
 import { UserRole } from 'src/auth/interfaces/user.role';
+import { IsAdminGuard } from 'src/auth/guards/admin-auth.guard';
 
 @Controller('therapists')
 @UseGuards(JwtAuthGuard)
@@ -25,14 +26,11 @@ export class TherapistsController {
   constructor(private readonly therapistsService: TherapistsService) {}
 
   @Post()
+  @UseGuards(IsAdminGuard)
   async create(
     @Body() createTherapistDto: CreateTherapistDto,
     @CurrentUser() user: User,
   ) {
-    // Only admin users can create therapists
-    if (user.role !== UserRole.ADMIN) {
-      throw new UnauthorizedException('Only admin users can create therapists');
-    }
     return await this.therapistsService.create(createTherapistDto);
   }
 
@@ -51,24 +49,18 @@ export class TherapistsController {
   }
 
   @Patch(':id')
+  @UseGuards(IsAdminGuard)
   async update(
     @Param('id') id: string,
     @Body() updateTherapistDto: Partial<CreateTherapistDto>,
     @CurrentUser() user: User,
   ) {
-    // Only admin users can update therapists
-    if (user.role !== UserRole.ADMIN) {
-      throw new UnauthorizedException('Only admin users can update therapists');
-    }
     return this.therapistsService.update(+id, updateTherapistDto);
   }
 
   @Delete(':id')
+  @UseGuards(IsAdminGuard)
   async remove(@Param('id') id: string, @CurrentUser() user: User) {
-    // Only admin users can delete therapists
-    if (user.role !== UserRole.ADMIN) {
-      throw new UnauthorizedException('Only admin users can delete therapists');
-    }
     return await this.therapistsService.remove(+id);
   }
 }

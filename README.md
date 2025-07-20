@@ -44,6 +44,10 @@ used class validator and class transformer for validating DTOs
 
 - **GUARDS**
 
+- JWT Guard : to ensure user is authenticated
+
+- IsAdminGuard : to check if user has the privileges for (adding , updating and removing therapists)
+
 ## Project Setup
 
 I switched to docker to add the mariaDB database
