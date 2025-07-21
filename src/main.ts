@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import { GlobalExceptionFilter } from './common/filters/global.exception.filter';
 import { ValidationExceptionFilter } from './common/filters/validation.exception.filter';
+import { IsRequestFromEgyptGuard } from './common/guards/IsRequestFromEgypt.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -26,6 +27,8 @@ async function bootstrap() {
     new GlobalExceptionFilter(),
     new ValidationExceptionFilter(),
   );
+  // Allow only requests from Egypt
+  app.useGlobalGuards(new IsRequestFromEgyptGuard());
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('server.port') as number;
